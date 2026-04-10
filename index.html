@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Automation Conversion Dashboard — Nordic Health Group</title>
+  <title>Automation Conversion Dashboard â Nordic Health Group</title>
   <style>
     :root {
       --teal:#00b5ad; --teal-dark:#009c95; --teal-light:#e0f7f6;
@@ -13,7 +13,7 @@
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-    /* ── TOP BAR ── */
+    /* ââ TOP BAR ââ */
     .topbar{background:var(--teal);color:#fff;padding:14px 28px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
     .topbar h1{font-size:1.25rem;font-weight:700;}
     .topbar small{opacity:.8;font-size:.8rem;display:block;margin-top:2px;}
@@ -23,7 +23,7 @@
 
     .main{max-width:1200px;margin:0 auto;padding:24px 20px;}
 
-    /* ── SETUP CARD ── */
+    /* ââ SETUP CARD ââ */
     .setup-card{background:var(--card);border-radius:14px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:24px;overflow:hidden;}
     .setup-tabs{display:flex;border-bottom:1px solid var(--border);}
     .setup-tab{padding:13px 22px;font-size:.85rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;color:var(--muted);}
@@ -57,18 +57,18 @@
     .btn:disabled{background:#b2dfdb;cursor:not-allowed;}
     .btn-sm{padding:7px 16px;font-size:.8rem;}
 
-    /* ── PROGRESS ── */
+    /* ââ PROGRESS ââ */
     .progress-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:20px;display:none;}
     .progress-card.visible{display:block;}
     .progress-label{font-size:.85rem;color:var(--muted);margin-bottom:10px;}
     .progress-track{height:6px;background:#e0e4ea;border-radius:3px;overflow:hidden;}
     .progress-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .4s ease;}
 
-    /* ── ERROR ── */
+    /* ââ ERROR ââ */
     .error-box{background:#fff5f5;border:1px solid #fed7d7;border-radius:10px;padding:14px 18px;margin-bottom:18px;color:#c53030;font-size:.85rem;display:none;}
     .error-box.visible{display:block;}
 
-    /* ── SUMMARY ── */
+    /* ââ SUMMARY ââ */
     #summarySection{display:none;}
     .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
     @media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
@@ -90,7 +90,7 @@
     .bar-wrap{flex:1;height:8px;background:#e0e4ea;border-radius:4px;overflow:hidden;}
     .bar-fill{height:100%;border-radius:4px;transition:width 1.2s ease;}
 
-    /* ── TABLE ── */
+    /* ââ TABLE ââ */
     #tableSection{display:none;}
     .table-card{background:var(--card);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden;}
     .table-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
@@ -121,32 +121,32 @@
 <body>
 
 <div class="topbar">
-  <span style="font-size:1.6rem">📊</span>
+  <span style="font-size:1.6rem">ð</span>
   <div>
     <h1>Automation Conversion Dashboard</h1>
-    <small>Nordic Health Group · Swedish Department · Mail 1 / 2 / 3: FU to Treatment</small>
+    <small>Nordic Health Group Â· Mail 1 / 2 / 3: FU til behandling konvertering</small>
   </div>
   <div class="topbar-right" id="tokenStatus" style="display:none">
     <div class="status-dot" id="statusDot"></div>
     <span id="statusLabel"></span>
-    <button class="btn btn-sm" onclick="showSetup()">↻ Refresh</button>
+    <button class="btn btn-sm" onclick="showSetup()">â» Refresh</button>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- ── SETUP CARD ── -->
+  <!-- ââ SETUP CARD ââ -->
   <div class="setup-card" id="setupCard">
 
     <div class="setup-tabs">
-      <div class="setup-tab active" onclick="switchTab('bookmarklet')" id="tab-bookmarklet">🔖 Bookmarklet (recommended)</div>
-      <div class="setup-tab" onclick="switchTab('manual')" id="tab-manual">✏️ Paste token manually</div>
+      <div class="setup-tab active" onclick="switchTab('bookmarklet')" id="tab-bookmarklet">ð Bookmarklet (recommended)</div>
+      <div class="setup-tab" onclick="switchTab('manual')" id="tab-manual">âï¸ Paste token manually</div>
     </div>
 
     <!-- BOOKMARKLET TAB -->
     <div class="setup-panel" id="panel-bookmarklet">
       <p style="font-size:.85rem;color:var(--muted);margin-bottom:4px">
-        Set this up once — then any colleague just clicks the bookmarklet while on Pabau and the dashboard opens automatically, no copy-pasting ever needed.
+        Set this up once â then any colleague just clicks the bookmarklet while on Pabau and the dashboard opens automatically, no copy-pasting ever needed.
       </p>
 
       <div class="bm-steps">
@@ -154,7 +154,7 @@
           <div class="num">1</div>
           <strong>Drag to bookmarks bar</strong>
           <p>Drag the button below into your browser's bookmarks bar</p>
-          <a id="bmLink" class="bookmarklet-btn" title="Drag me to your bookmarks bar!">📊 Open Dashboard</a>
+          <a id="bmLink" class="bookmarklet-btn" title="Drag me to your bookmarks bar!">ð Open Dashboard</a>
         </div>
         <div class="bm-step">
           <div class="num">2</div>
@@ -164,25 +164,25 @@
         <div class="bm-step">
           <div class="num">3</div>
           <strong>Click the bookmark</strong>
-          <p>Click "Open Dashboard" from your bookmarks — it opens here with your session automatically</p>
+          <p>Click "Open Dashboard" from your bookmarks â it opens here with your session automatically</p>
         </div>
       </div>
 
       <p style="font-size:.78rem;color:var(--muted)">
-        💡 Share this page URL with colleagues and tell them to follow the 3 steps above. Works for anyone with a Pabau account.
+        ð¡ Share this page URL with colleagues and tell them to follow the 3 steps above. Works for anyone with a Pabau account.
       </p>
     </div>
 
     <!-- MANUAL TAB -->
     <div class="setup-panel hidden" id="panel-manual">
       <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">
-        While on <strong>app.pabau.com</strong>, open your browser console (F12 → Console) and run:
+        While on <strong>app.pabau.com</strong>, open your browser console (F12 â Console) and run:
       </p>
       <code style="display:block;background:#f0f2f5;padding:10px 14px;border-radius:8px;font-size:.8rem;user-select:all">
         JSON.parse(localStorage.getItem('token')).state.token
       </code>
       <div class="manual-row">
-        <textarea id="jwtInput" placeholder="Paste your token here…"></textarea>
+        <textarea id="jwtInput" placeholder="Paste your token hereâ¦"></textarea>
       </div>
       <p class="hint">Tokens last ~12 hours. Save the bookmarklet above to avoid repeating this step.</p>
     </div>
@@ -194,31 +194,31 @@
         <option value="60">60 days</option>
         <option value="90" selected>90 days</option>
       </select>
-      <button class="btn" id="loadBtn" onclick="loadData()">Load data →</button>
+      <button class="btn" id="loadBtn" onclick="loadData()">Load data â</button>
     </div>
   </div>
 
-  <!-- ── PROGRESS ── -->
+  <!-- ââ PROGRESS ââ -->
   <div class="progress-card" id="progressCard">
-    <div class="progress-label" id="progressLabel">Starting…</div>
+    <div class="progress-label" id="progressLabel">Startingâ¦</div>
     <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
   </div>
 
-  <!-- ── ERROR ── -->
+  <!-- ââ ERROR ââ -->
   <div class="error-box" id="errorBox"></div>
 
-  <!-- ── SUMMARY ── -->
+  <!-- ââ SUMMARY ââ -->
   <div id="summarySection">
     <div class="kpi-grid">
       <div class="kpi accent"><div class="lbl">Total recipients</div><div class="val" id="kTotalSent">0</div><div class="sub">across all 3 flows</div></div>
       <div class="kpi"><div class="lbl">Booked after email</div><div class="val" id="kBooked" style="color:var(--green)">0</div><div class="sub">confirmed conversions</div></div>
       <div class="kpi"><div class="lbl">Conversion rate</div><div class="val" id="kRate">0%</div><div class="sub">of recipients booked</div></div>
-      <div class="kpi"><div class="lbl">Period</div><div class="val" id="kPeriod" style="font-size:1.4rem">–</div><div class="sub" id="kRange"></div></div>
+      <div class="kpi"><div class="lbl">Period</div><div class="val" id="kPeriod" style="font-size:1.4rem">â</div><div class="sub" id="kRange"></div></div>
     </div>
     <div class="auto-grid" id="autoGrid"></div>
   </div>
 
-  <!-- ── TABLE ── -->
+  <!-- ââ TABLE ââ -->
   <div id="tableSection">
     <div class="table-card">
       <div class="table-head">
@@ -232,10 +232,10 @@
           </select>
           <select id="fBooked" onchange="renderTable()">
             <option value="">All statuses</option>
-            <option value="1">Booked ✓</option>
+            <option value="1">Booked â</option>
             <option value="0">Not booked</option>
           </select>
-          <input type="text" id="fSearch" placeholder="Search name / email…" oninput="renderTable()"/>
+          <input type="text" id="fSearch" placeholder="Search name / emailâ¦" oninput="renderTable()"/>
         </div>
       </div>
       <div id="tableBody"></div>
@@ -248,33 +248,33 @@
 
 </div>
 
-<footer>Pabau Automation Dashboard · Nordic Health Group · Data fetched live from Pabau</footer>
+<footer>Pabau Automation Dashboard Â· Nordic Health Group Â· Data fetched live from Pabau</footer>
 
 <script>
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // CONFIG
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 const GQL      = 'https://api.pabau.com/v1/graphql';
 const AUTO_IDS = [7532, 7533, 7549];
-const AUTO_NAMES = {7532:'Mail 1', 7533:'Mail 2', 7549:'Mail 3'};
+// Flow names extracted dynamically from EmailCampaign names (e.g. "Mail 1: FU tilâ¦")
 const LS_TOKEN = 'nhg_pabau_token';
 const LS_EXP   = 'nhg_pabau_token_exp';
 const PAGE_SIZE = 25;
 
 let allRows = [], curPage = 1;
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // BOOKMARKLET SETUP
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 (function() {
   const here = window.location.href.split('?')[0].split('#')[0];
   const bm = `javascript:(function(){try{var t=JSON.parse(localStorage.getItem('token')).state.token;window.open('${here}#bm='+encodeURIComponent(t),'_blank');}catch(e){alert('Could not read Pabau token. Make sure you are logged into app.pabau.com.');}})();`;
   document.getElementById('bmLink').href = bm;
 })();
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // TOKEN HANDLING
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function getToken() {
   // Check URL hash from bookmarklet
   const hash = window.location.hash;
@@ -316,7 +316,7 @@ function updateStatusBar(expMs) {
     lbl.textContent = `Session valid ~${mins < 60 ? mins + 'm' : Math.round(mins/60) + 'h'}`;
   } else {
     dot.className = 'status-dot expired';
-    lbl.textContent = 'Session expired — click Refresh';
+    lbl.textContent = 'Session expired â click Refresh';
   }
 }
 
@@ -324,9 +324,9 @@ function showSetup() {
   document.getElementById('setupCard').style.display = '';
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // TABS
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function switchTab(name) {
   ['bookmarklet','manual'].forEach(n => {
     document.getElementById('tab-'+n).classList.toggle('active', n === name);
@@ -334,9 +334,9 @@ function switchTab(name) {
   });
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // AUTO-LOAD
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 window.addEventListener('load', () => {
   const t = getToken();
   if (t) {
@@ -345,24 +345,24 @@ window.addEventListener('load', () => {
   }
 });
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // GRAPHQL HELPER
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 async function gql(jwt, query) {
   const r = await fetch(GQL, {
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt},
     body: JSON.stringify({query})
   });
-  if (!r.ok) throw new Error('HTTP '+r.status+' — is your token valid?');
+  if (!r.ok) throw new Error('HTTP '+r.status+' â is your token valid?');
   const j = await r.json();
   if (j.errors) throw new Error(j.errors[0].message);
   return j.data;
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // MAIN DATA LOAD
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 async function loadData(jwtArg) {
   const jwt = jwtArg || document.getElementById('jwtInput').value.trim();
   if (!jwt) { showErr('Please paste your Pabau token.'); return; }
@@ -372,140 +372,75 @@ async function loadData(jwtArg) {
   document.getElementById('errorBox').className = 'error-box';
   document.getElementById('summarySection').style.display = 'none';
   document.getElementById('tableSection').style.display = 'none';
-  showProgress('Checking API schema…', 2);
+  showProgress('Fetching automation email campaignsâ¦', 5);
 
   const days  = parseInt(document.getElementById('periodSelect').value);
   const since = new Date(Date.now() - days*86400000).toISOString();
 
+  // Extract "Mail 1" / "Mail 2" / "Mail 3" from campaign name
+  function getFlowName(name) {
+    const m = (name || '').match(/Mail\s*(\d)/i);
+    return m ? `Mail ${m[1]}` : 'Other';
+  }
+
   try {
-    // ── STEP 0: Schema introspection ─────────────
-    const intro = await gql(jwt, `{
-      __schema { queryType { fields { name } } }
+    // ââ STEP 1: Find FU automation email campaigns â
+    const d1 = await gql(jwt, `{
+      findManyEmailCampaign(
+        where:{ type:{equals:automation}, name:{contains:"FU"}, sent_at:{gte:"${since}"} },
+        orderBy:[{sent_at:asc}],
+        take:500
+      ) { id name communication_id sent_at }
     }`);
-    const allFields = intro.__schema.queryType.fields.map(f => f.name);
-    const autoFields = allFields.filter(n => /auto/i.test(n));
-    console.log('🔍 Automation-related API fields:', autoFields);
 
-    // Priority order for field name guessing
-    const CANDIDATES_PARENT = ['automations','automation','Automations','Automation','findManyAutomation','pabau_automations','cm_automations'];
-    const CANDIDATES_LOG    = ['automation_logs','automation_log','AutomationLog','AutomationLogs','findManyAutomationLog','findManyAutomationLogs'];
-
-    const foundParent = CANDIDATES_PARENT.find(c => allFields.includes(c));
-    const foundLog    = CANDIDATES_LOG.find(c => allFields.includes(c));
-
-    showProgress('Fetching automation runs…', 5);
-
-    const completeLogs = [];
-
-    // ── STEP 1a: Nested query (automation → logs) ─
-    if (foundParent) {
-      const d1 = await gql(jwt, `{
-        ${foundParent}(where:{id:{_in:[7532,7533,7549]}}) {
-          id name
-          automation_logs(where:{create_date:{_gte:"${since}"}},order_by:{create_date:desc}) {
-            id create_date data steps
-          }
-        }
-      }`).catch(() => null);
-
-      if (d1 && d1[foundParent]) {
-        for (const auto of d1[foundParent]) {
-          for (const log of (auto.automation_logs || [])) {
-            if (log.data?.status === 'Complete' && log.data?.campaignId) {
-              completeLogs.push({
-                autoId: auto.id, autoName: AUTO_NAMES[auto.id],
-                logId: log.id, sendDate: new Date(log.create_date),
-                campaignId: parseInt(log.data.campaignId)
-              });
-            }
-          }
-        }
-      }
-    }
-
-    // ── STEP 1b: Flat log query (if nested didn't work) ─
-    if (!completeLogs.length && foundLog) {
-      const d1b = await gql(jwt, `{
-        ${foundLog}(
-          where:{automation_id:{_in:[7532,7533,7549]},create_date:{_gte:"${since}"}}
-          order_by:{create_date:desc}
-        ) { id create_date data automation_id }
-      }`).catch(() => null);
-
-      if (d1b && d1b[foundLog]) {
-        for (const log of d1b[foundLog]) {
-          if (log.data?.status === 'Complete' && log.data?.campaignId) {
-            const autoId = parseInt(log.automation_id);
-            completeLogs.push({
-              autoId, autoName: AUTO_NAMES[autoId] || `Flow ${autoId}`,
-              logId: log.id, sendDate: new Date(log.create_date),
-              campaignId: parseInt(log.data.campaignId)
-            });
-          }
-        }
-      }
-    }
-
-    // ── STEP 1c: If still nothing, show schema info ─
-    if (!completeLogs.length && !foundParent && !foundLog) {
-      const autoList = autoFields.length
-        ? autoFields.join(', ')
-        : '(none found — check your token permissions)';
-      throw new Error(
-        `Could not find automation fields in your Pabau API.\n\n` +
-        `Fields found containing "auto": ${autoList}\n\n` +
-        `Please screenshot this error and send to your developer to update the dashboard query.`
-      );
-    }
-
-    if (!completeLogs.length) {
+    const campaigns = (d1.findManyEmailCampaign || []).filter(c => c.communication_id);
+    if (!campaigns.length) {
       hideProgress();
-      showErr('No successful automation runs found in the selected period.');
+      showErr(
+        'No FU automation email campaigns found in the selected period.\n\n' +
+        'Make sure you are logged into app.pabau.com as the correct company ' +
+        'before clicking the bookmarklet.'
+      );
       document.getElementById('loadBtn').disabled = false;
       return;
     }
 
-    showProgress(`Found ${completeLogs.length} email runs — fetching campaign data…`, 25);
-
-    // ── STEP 2: Campaign → communication IDs ────
-    const campIds = [...new Set(completeLogs.map(l => l.campaignId))];
-    const d2 = await gql(jwt, `{
-      findManyEmailCampaign(where:{id:{in:[${campIds}]}}) { id communication_id }
-    }`);
-    const campToComm = {};
-    for (const c of d2.findManyEmailCampaign) campToComm[c.id] = c.communication_id;
-    for (const l of completeLogs) l.commId = campToComm[l.campaignId];
-
-    showProgress('Fetching email recipients…', 45);
-
-    // ── STEP 3: Recipients (batched) ─────────────
-    const commIdToLogs = {};
-    for (const l of completeLogs) {
-      if (!l.commId) continue;
-      if (!commIdToLogs[l.commId]) commIdToLogs[l.commId] = [];
-      commIdToLogs[l.commId].push(l);
+    // Build communication_id â {flowName, sentAt} map
+    const commIdToInfo = {};
+    for (const c of campaigns) {
+      commIdToInfo[c.communication_id] = {
+        flowName: getFlowName(c.name),
+        sentAt:   new Date(c.sent_at)
+      };
     }
-    const commIds = Object.keys(commIdToLogs).map(Number);
+    const commIds = Object.keys(commIdToInfo).map(Number);
 
-    const rowMap = {}; // key: contactId_logId → row data
+    showProgress(`Found ${campaigns.length} campaign sends â fetching recipientsâ¦`, 25);
+
+    // ââ STEP 2: Recipients (batched by commId) ââââ
+    const commIdToLogs = {};
+    for (const cid of commIds) {
+      commIdToLogs[cid] = [{ commId: cid, ...commIdToInfo[cid] }];
+    }
+
+    const rowMap = {}; // key: contactId_commId â row data
     const CHUNK = 12;
     for (let i = 0; i < commIds.length; i += CHUNK) {
       const chunk = commIds.slice(i, i + CHUNK);
       const aliases = chunk.map((id, ix) =>
-        `r${ix}:findManyCommunicationRecipient(where:zcommunications_id:{equals:${id}}}){recipient_id to_address}`
+        `r${ix}:findManyCommunicationRecipient(where:{communications_id:{equals:${id}}}){recipient_id to_address}`
       ).join('\n');
       const d3 = await gql(jwt, `{${aliases}}`);
       for (let ix = 0; ix < chunk.length; ix++) {
         const cid = chunk[ix];
+        const info = commIdToInfo[cid];
         for (const r of (d3[`r${ix}`]||[])) {
-          for (const log of commIdToLogs[cid]) {
-            const key = `${r.recipient_id}_${log.logId}`;
-            if (!rowMap[key]) rowMap[key] = {
-              contactId: r.recipient_id, email: r.to_address,
-              autoName: log.autoName, autoId: log.autoId,
-              sendDate: log.sendDate, logId: log.logId
-            };
-          }
+          const key = `${r.recipient_id}_${cid}`;
+          if (!rowMap[key]) rowMap[key] = {
+            contactId: r.recipient_id, email: r.to_address,
+            autoName: info.flowName,
+            sendDate: info.sentAt
+          };
         }
       }
     }
@@ -513,9 +448,9 @@ async function loadData(jwtArg) {
     const entries = Object.values(rowMap);
     const contactIds = [...new Set(entries.map(e => e.contactId))];
 
-    showProgress(`Checking bookings for ${contactIds.length} contacts…`, 65);
+    showProgress(`Checking bookings for ${contactIds.length} contactsâ¦`, 65);
 
-    // ── STEP 4: Contact bookings (batched) ───────
+    // ââ STEP 4: Contact bookings (batched) âââââââ
     const contactData = {};
     const CC = 30;
     for (let i = 0; i < contactIds.length; i += CC) {
@@ -529,9 +464,9 @@ async function loadData(jwtArg) {
       for (const c of d4.findManyCmContact) contactData[c.ID] = c;
     }
 
-    showProgress('Calculating conversions…', 88);
+    showProgress('Calculating conversionsâ¦', 88);
 
-    // ── STEP 5: Build result rows ─────────────────
+    // ââ STEP 5: Build result rows âââââââââââââââââ
     allRows = [];
     for (const e of entries) {
       const c = contactData[e.contactId];
@@ -574,18 +509,18 @@ async function loadData(jwtArg) {
   document.getElementById('loadBtn').disabled = false;
 }
 
-// ─────────────────────────────────────────────
-// DATE PARSE: 20260408125000 → Date
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// DATE PARSE: 20260408125000 â Date
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function parseBookingDate(d) {
   const s = String(d).padStart(14,'0');
   return new Date(+s.slice(0,4), +s.slice(4,6)-1, +s.slice(6,8), +s.slice(8,10), +s.slice(10,12));
 }
 function fmt(d) { return d.toLocaleDateString('sv-SE'); }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // SUMMARY
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function renderSummary(days, since) {
   const total = allRows.length;
   const bk    = allRows.filter(r=>r.booked).length;
@@ -594,7 +529,7 @@ function renderSummary(days, since) {
   document.getElementById('kBooked').textContent    = bk;
   document.getElementById('kRate').textContent      = rate+'%';
   document.getElementById('kPeriod').textContent    = days+'d';
-  document.getElementById('kRange').textContent     = fmt(since)+' – '+fmt(new Date());
+  document.getElementById('kRange').textContent     = fmt(since)+' â '+fmt(new Date());
 
   const colors = {'Mail 1':'#2980b9','Mail 2':'#8e44ad','Mail 3':'#e67e22'};
   const grid = document.getElementById('autoGrid');
@@ -621,9 +556,9 @@ function renderSummary(days, since) {
   }
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // TABLE
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function renderTable() {
   const fa = document.getElementById('fAuto').value;
   const fb = document.getElementById('fBooked').value;
@@ -658,14 +593,14 @@ function renderTable() {
       <td><strong>${esc(r.name)}</strong><br/><span style="color:var(--muted);font-size:.74rem">${esc(r.email)}</span></td>
       <td><span class="badge ${cls[r.autoName]||''}">${r.autoName}</span></td>
       <td>${fmt(r.sendDate)}</td>
-      <td><span class="badge ${r.booked?'ok':'no'}">${r.booked?'✓ Booked':'✗ Not booked'}</span></td>
-      <td>${r.bookingDate ? fmt(r.bookingDate) : '—'}</td>
-      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.service?esc(r.service):'—'}</td>
+      <td><span class="badge ${r.booked?'ok':'no'}">${r.booked?'â Booked':'â Not booked'}</span></td>
+      <td>${r.bookingDate ? fmt(r.bookingDate) : 'â'}</td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.service?esc(r.service):'â'}</td>
     </tr>`).join('')}</tbody></table>`;
 
   const start = (curPage-1)*PAGE_SIZE;
   document.getElementById('pgInfo').textContent =
-    `Showing ${start+1}–${Math.min(start+PAGE_SIZE,f.length)} of ${f.length}`;
+    `Showing ${start+1}â${Math.min(start+PAGE_SIZE,f.length)} of ${f.length}`;
 
   const pb = document.getElementById('pgBtns');
   pb.innerHTML = '';
@@ -678,9 +613,9 @@ function renderTable() {
   }
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // HELPERS
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function showProgress(msg, pct) {
   const c = document.getElementById('progressCard');
   c.className = 'progress-card visible';
@@ -690,7 +625,7 @@ function showProgress(msg, pct) {
 function hideProgress() { document.getElementById('progressCard').className = 'progress-card'; }
 function showErr(msg) {
   const b = document.getElementById('errorBox');
-  b.textContent = '⚠️ '+msg;
+  b.textContent = 'â ï¸ '+msg;
   b.className = 'error-box visible';
 }
 function esc(s) {
