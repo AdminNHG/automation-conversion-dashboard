@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Automation Conversion Dashboard — Nordic Health Group</title>
+  <style>
+    :root {
+      --teal:#00b5ad; --teal-dark:#009c95; --teal-light:#e0f7f6;
+      --bg:#f4f6f9; --card:#fff; --text:#2c3e50; --muted:#7f8c8d;
+      --border:#e0e4ea; --green:#27ae60; --red:#e74c3c; --orange:#e67e22;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+    /* ── TOP BAR ── */
+    .topbar{background:var(--teal);color:#fff;padding:14px 28px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+    .topbar h1{font-size:1.25rem;font-weight:700;}
+    .topbar small{opacity:.8;font-size:.8rem;display:block;margin-top:2px;}
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:.82rem;}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:#4cd964;flex-shrink:0;}
+    .status-dot.expired{background:#e74c3c;}
+
+    .main{max-width:1200px;margin:0 auto;padding:24px 20px;}
+
+    /* ── SETUP CARD ── */
+    .setup-card{background:var(--card);border-radius:14px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:24px;overflow:hidden;}
+    .setup-tabs{display:flex;border-bottom:1px solid var(--border);}
+    .setup-tab{padding:13px 22px;font-size:.85rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;color:var(--muted);}
+    .setup-tab.active{color:var(--teal);border-bottom-color:var(--teal);}
+    .setup-panel{padding:22px 24px;}
+    .setup-panel.hidden{display:none;}
+
+    /* bookmarklet */
+    .bm-steps{display:flex;gap:0;margin:16px 0;}
+    .bm-step{flex:1;text-align:center;padding:16px 12px;border-right:1px solid var(--border);}
+    .bm-step:last-child{border-right:none;}
+    .bm-step .num{width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+    .bm-step p{font-size:.8rem;color:var(--muted);}
+    .bm-step strong{font-size:.85rem;color:var(--text);display:block;margin-bottom:4px;}
+    .bookmarklet-btn{display:inline-block;padding:8px 18px;background:var(--orange);color:#fff;border-radius:8px;font-weight:700;font-size:.85rem;text-decoration:none;cursor:grab;border:2px dashed rgba(255,255,255,.5);}
+    .bookmarklet-btn:hover{background:#d35400;}
+
+    /* manual tab */
+    .manual-row{display:flex;gap:10px;margin-top:12px;}
+    .manual-row textarea{flex:1;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-family:monospace;font-size:.75rem;resize:vertical;min-height:56px;outline:none;transition:border-color .2s;}
+    .manual-row textarea:focus{border-color:var(--teal);}
+    .hint{font-size:.78rem;color:var(--muted);margin-top:6px;}
+    .hint code{background:#f0f2f5;padding:2px 6px;border-radius:4px;font-family:monospace;}
+
+    .period-row{display:flex;align-items:center;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+    .period-row label{font-size:.85rem;color:var(--muted);}
+    select{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:.85rem;outline:none;cursor:pointer;}
+
+    .btn{padding:10px 22px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s;}
+    .btn:hover{background:var(--teal-dark);}
+    .btn:disabled{background:#b2dfdb;cursor:not-allowed;}
+    .btn-sm{padding:7px 16px;font-size:.8rem;}
+
+    /* ── PROGRESS ── */
+    .progress-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:20px;display:none;}
+    .progress-card.visible{display:block;}
+    .progress-label{font-size:.85rem;color:var(--muted);margin-bottom:10px;}
+    .progress-track{height:6px;background:#e0e4ea;border-radius:3px;overflow:hidden;}
+    .progress-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .4s ease;}
+
+    /* ── ERROR ── */
+    .error-box{background:#fff5f5;border:1px solid #fed7d7;border-radius:10px;padding:14px 18px;margin-bottom:18px;color:#c53030;font-size:.85rem;display:none;}
+    .error-box.visible{display:block;}
+
+    /* ── SUMMARY ── */
+    #summarySection{display:none;}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+    @media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+    .kpi{background:var(--card);border-radius:12px;padding:18px 16px;border:1px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.05);}
+    .kpi .lbl{font-size:.73rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:7px;}
+    .kpi .val{font-size:1.9rem;font-weight:800;}
+    .kpi .sub{font-size:.75rem;color:var(--muted);margin-top:3px;}
+    .kpi.accent .val{color:var(--teal);}
+
+    .auto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
+    @media(max-width:800px){.auto-grid{grid-template-columns:1fr;}}
+    .auto-card{background:var(--card);border-radius:12px;padding:18px;border:1px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.05);}
+    .auto-card h3{font-size:.85rem;font-weight:700;margin-bottom:12px;}
+    .stat-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:.82rem;}
+    .stat-row:last-of-type{border:none;}
+    .stat-row b{font-weight:700;}
+    .conv-row{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:2px solid;}
+    .circle{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0;}
+    .bar-wrap{flex:1;height:8px;background:#e0e4ea;border-radius:4px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:4px;transition:width 1.2s ease;}
+
+    /* ── TABLE ── */
+    #tableSection{display:none;}
+    .table-card{background:var(--card);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden;}
+    .table-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+    .table-head h2{font-size:.92rem;font-weight:700;}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;}
+    .filters select,.filters input{padding:6px 10px;border:1px solid var(--border);border-radius:7px;font-size:.8rem;outline:none;}
+    table{width:100%;border-collapse:collapse;font-size:.82rem;}
+    th{padding:9px 14px;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);background:#fafbfc;border-bottom:1px solid var(--border);}
+    td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:#f8fbff;}
+    .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:.73rem;font-weight:700;}
+    .badge.ok{background:#d5f5e3;color:#1e8449;}
+    .badge.no{background:#fdecea;color:#c0392b;}
+    .badge.m1{background:#d6eaf8;color:#1a5276;}
+    .badge.m2{background:#e8daef;color:#6c3483;}
+    .badge.m3{background:#fdebd0;color:#784212;}
+    .empty{padding:50px;text-align:center;color:var(--muted);font-size:.88rem;}
+    .pg-bar{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--muted);}
+    .pg-btns{display:flex;gap:5px;}
+    .pg-btn{padding:4px 11px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:.8rem;}
+    .pg-btn:hover{background:var(--bg);}
+    .pg-btn.on{background:var(--teal);color:#fff;border-color:var(--teal);}
+
+    footer{text-align:center;color:var(--muted);font-size:.75rem;padding:20px;}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <span style="font-size:1.6rem">📊</span>
+  <div>
+    <h1>Automation Conversion Dashboard</h1>
+    <small>Nordic Health Group · Swedish Department · Mail 1 / 2 / 3: FU to Treatment</small>
+  </div>
+  <div class="topbar-right" id="tokenStatus" style="display:none">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusLabel"></span>
+    <button class="btn btn-sm" onclick="showSetup()">↻ Refresh</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ── SETUP CARD ── -->
+  <div class="setup-card" id="setupCard">
+
+    <div class="setup-tabs">
+      <div class="setup-tab active" onclick="switchTab('bookmarklet')" id="tab-bookmarklet">🔖 Bookmarklet (recommended)</div>
+      <div class="setup-tab" onclick="switchTab('manual')" id="tab-manual">✏️ Paste token manually</div>
+    </div>
+
+    <!-- BOOKMARKLET TAB -->
+    <div class="setup-panel" id="panel-bookmarklet">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:4px">
+        Set this up once — then any colleague just clicks the bookmarklet while on Pabau and the dashboard opens automatically, no copy-pasting ever needed.
+      </p>
+
+      <div class="bm-steps">
+        <div class="bm-step">
+          <div class="num">1</div>
+          <strong>Drag to bookmarks bar</strong>
+          <p>Drag the button below into your browser's bookmarks bar</p>
+          <a id="bmLink" class="bookmarklet-btn" title="Drag me to your bookmarks bar!">📊 Open Dashboard</a>
+        </div>
+        <div class="bm-step">
+          <div class="num">2</div>
+          <strong>Go to Pabau</strong>
+          <p>Open <strong>app.pabau.com</strong> and make sure you're logged in</p>
+        </div>
+        <div class="bm-step">
+          <div class="num">3</div>
+          <strong>Click the bookmark</strong>
+          <p>Click "Open Dashboard" from your bookmarks — it opens here with your session automatically</p>
+        </div>
+      </div>
+
+      <p style="font-size:.78rem;color:var(--muted)">
+        💡 Share this page URL with colleagues and tell them to follow the 3 steps above. Works for anyone with a Pabau account.
+      </p>
+    </div>
+
+    <!-- MANUAL TAB -->
+    <div class="setup-panel hidden" id="panel-manual">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">
+        While on <strong>app.pabau.com</strong>, open your browser console (F12 → Console) and run:
+      </p>
+      <code style="display:block;background:#f0f2f5;padding:10px 14px;border-radius:8px;font-size:.8rem;user-select:all">
+        JSON.parse(localStorage.getItem('token')).state.token
+      </code>
+      <div class="manual-row">
+        <textarea id="jwtInput" placeholder="Paste your token here…"></textarea>
+      </div>
+      <p class="hint">Tokens last ~12 hours. Save the bookmarklet above to avoid repeating this step.</p>
+    </div>
+
+    <div class="period-row" style="padding:0 24px 20px">
+      <label>Show last:</label>
+      <select id="periodSelect">
+        <option value="30">30 days</option>
+        <option value="60">60 days</option>
+        <option value="90" selected>90 days</option>
+      </select>
+      <button class="btn" id="loadBtn" onclick="loadData()">Load data →</button>
+    </div>
+  </div>
+
+  <!-- ── PROGRESS ── -->
+  <div class="progress-card" id="progressCard">
+    <div class="progress-label" id="progressLabel">Starting…</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- ── ERROR ── -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- ── SUMMARY ── -->
+  <div id="summarySection">
+    <div class="kpi-grid">
+      <div class="kpi accent"><div class="lbl">Total recipients</div><div class="val" id="kTotalSent">0</div><div class="sub">across all 3 flows</div></div>
+      <div class="kpi"><div class="lbl">Booked after email</div><div class="val" id="kBooked" style="color:var(--green)">0</div><div class="sub">confirmed conversions</div></div>
+      <div class="kpi"><div class="lbl">Conversion rate</div><div class="val" id="kRate">0%</div><div class="sub">of recipients booked</div></div>
+      <div class="kpi"><div class="lbl">Period</div><div class="val" id="kPeriod" style="font-size:1.4rem">–</div><div class="sub" id="kRange"></div></div>
+    </div>
+    <div class="auto-grid" id="autoGrid"></div>
+  </div>
+
+  <!-- ── TABLE ── -->
+  <div id="tableSection">
+    <div class="table-card">
+      <div class="table-head">
+        <h2>Recipient details</h2>
+        <div class="filters">
+          <select id="fAuto" onchange="renderTable()">
+            <option value="">All flows</option>
+            <option value="Mail 1">Mail 1</option>
+            <option value="Mail 2">Mail 2</option>
+            <option value="Mail 3">Mail 3</option>
+          </select>
+          <select id="fBooked" onchange="renderTable()">
+            <option value="">All statuses</option>
+            <option value="1">Booked ✓</option>
+            <option value="0">Not booked</option>
+          </select>
+          <input type="text" id="fSearch" placeholder="Search name / email…" oninput="renderTable()"/>
+        </div>
+      </div>
+      <div id="tableBody"></div>
+      <div class="pg-bar">
+        <span id="pgInfo"></span>
+        <div class="pg-btns" id="pgBtns"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Pabau Automation Dashboard · Nordic Health Group · Data fetched live from Pabau</footer>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────
+const GQL      = 'https://api.pabau.com/v1/graphql';
+const AUTO_IDS = [7532, 7533, 7549];
+const AUTO_NAMES = {7532:'Mail 1', 7533:'Mail 2', 7549:'Mail 3'};
+const LS_TOKEN = 'nhg_pabau_token';
+const LS_EXP   = 'nhg_pabau_token_exp';
+const PAGE_SIZE = 25;
+
+let allRows = [], curPage = 1;
+
+// ─────────────────────────────────────────────
+// BOOKMARKLET SETUP
+// ─────────────────────────────────────────────
+(function() {
+  const here = window.location.href.split('?')[0].split('#')[0];
+  const bm = `javascript:(function(){try{var t=JSON.parse(localStorage.getItem('token')).state.token;window.open('${here}#bm='+encodeURIComponent(t),'_blank');}catch(e){alert('Could not read Pabau token. Make sure you are logged into app.pabau.com.');}})();`;
+  document.getElementById('bmLink').href = bm;
+})();
+
+// ─────────────────────────────────────────────
+// TOKEN HANDLING
+// ─────────────────────────────────────────────
+function getToken() {
+  // Check URL hash from bookmarklet
+  const hash = window.location.hash;
+  if (hash.includes('bm=')) {
+    const t = decodeURIComponent(hash.split('bm=')[1]);
+    saveToken(t);
+    window.history.replaceState(null, '', window.location.pathname);
+    return t;
+  }
+  // Check localStorage
+  const exp = parseInt(localStorage.getItem(LS_EXP) || '0');
+  if (exp > Date.now()) {
+    return localStorage.getItem(LS_TOKEN);
+  }
+  return null;
+}
+
+function saveToken(jwt) {
+  try {
+    const payload = JSON.parse(atob(jwt.split('.')[1]));
+    const exp = payload.exp * 1000; // ms
+    localStorage.setItem(LS_TOKEN, jwt);
+    localStorage.setItem(LS_EXP, String(exp));
+    updateStatusBar(exp);
+  } catch(e) {
+    localStorage.setItem(LS_TOKEN, jwt);
+    localStorage.setItem(LS_EXP, String(Date.now() + 12*3600*1000));
+  }
+}
+
+function updateStatusBar(expMs) {
+  const bar = document.getElementById('tokenStatus');
+  const dot = document.getElementById('statusDot');
+  const lbl = document.getElementById('statusLabel');
+  bar.style.display = 'flex';
+  const mins = Math.round((expMs - Date.now()) / 60000);
+  if (mins > 0) {
+    dot.className = 'status-dot';
+    lbl.textContent = `Session valid ~${mins < 60 ? mins + 'm' : Math.round(mins/60) + 'h'}`;
+  } else {
+    dot.className = 'status-dot expired';
+    lbl.textContent = 'Session expired — click Refresh';
+  }
+}
+
+function showSetup() {
+  document.getElementById('setupCard').style.display = '';
+}
+
+// ─────────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────────
+function switchTab(name) {
+  ['bookmarklet','manual'].forEach(n => {
+    document.getElementById('tab-'+n).classList.toggle('active', n === name);
+    document.getElementById('panel-'+n).classList.toggle('hidden', n !== name);
+  });
+}
+
+// ─────────────────────────────────────────────
+// AUTO-LOAD
+// ─────────────────────────────────────────────
+window.addEventListener('load', () => {
+  const t = getToken();
+  if (t) {
+    document.getElementById('setupCard').style.display = 'none';
+    loadData(t);
+  }
+});
+
+// ─────────────────────────────────────────────
+// GRAPHQL HELPER
+// ─────────────────────────────────────────────
+async function gql(jwt, query) {
+  const r = await fetch(GQL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt},
+    body: JSON.stringify({query})
+  });
+  if (!r.ok) throw new Error('HTTP '+r.status+' — is your token valid?');
+  const j = await r.json();
+  if (j.errors) throw new Error(j.errors[0].message);
+  return j.data;
+}
+
+// ─────────────────────────────────────────────
+// MAIN DATA LOAD
+// ─────────────────────────────────────────────
+async function loadData(jwtArg) {
+  const jwt = jwtArg || document.getElementById('jwtInput').value.trim();
+  if (!jwt) { showErr('Please paste your Pabau token.'); return; }
+  saveToken(jwt);
+
+  document.getElementById('loadBtn').disabled = true;
+  document.getElementById('errorBox').className = 'error-box';
+  document.getElementById('summarySection').style.display = 'none';
+  document.getElementById('tableSection').style.display = 'none';
+  showProgress('Fetching automation runs…', 5);
+
+  const days  = parseInt(document.getElementById('periodSelect').value);
+  const since = new Date(Date.now() - days*86400000).toISOString();
+
+  try {
+    // ── STEP 1: Automation logs ──────────────────
+    const d1 = await gql(jwt, `{
+      automations(where:{id:{_in:[7532,7533,7549]}}) {
+        id name
+        automation_logs(where:{create_date:{_gte:"${since}"}},order_by:{create_date:desc}) {
+          id create_date data steps
+        }
+      }
+    }`);
+
+    const completeLogs = [];
+    for (const auto of d1.automations) {
+      for (const log of auto.automation_logs) {
+        if (log.data?.status === 'Complete' && log.data?.campaignId) {
+          completeLogs.push({
+            autoId: auto.id, autoName: AUTO_NAMES[auto.id],
+            logId: log.id, sendDate: new Date(log.create_date),
+            campaignId: parseInt(log.data.campaignId)
+          });
+        }
+      }
+    }
+
+    if (!completeLogs.length) {
+      hideProgress();
+      showErr('No successful automation runs found in the selected period.');
+      document.getElementById('loadBtn').disabled = false;
+      return;
+    }
+
+    showProgress(`Found ${completeLogs.length} email runs — fetching campaign data…`, 25);
+
+    // ── STEP 2: Campaign → communication IDs ────
+    const campIds = [...new Set(completeLogs.map(l => l.campaignId))];
+    const d2 = await gql(jwt, `{
+      findManyEmailCampaign(where:{id:{in:[${campIds}]}}) { id communication_id }
+    }`);
+    const campToComm = {};
+    for (const c of d2.findManyEmailCampaign) campToComm[c.id] = c.communication_id;
+    for (const l of completeLogs) l.commId = campToComm[l.campaignId];
+
+    showProgress('Fetching email recipients…', 45);
+
+    // ── STEP 3: Recipients (batched) ─────────────
+    const commIdToLogs = {};
+    for (const l of completeLogs) {
+      if (!l.commId) continue;
+      if (!commIdToLogs[l.commId]) commIdToLogs[l.commId] = [];
+      commIdToLogs[l.commId].push(l);
+    }
+    const commIds = Object.keys(commIdToLogs).map(Number);
+
+    const rowMap = {}; // key: contactId_logId → row data
+    const CHUNK = 12;
+    for (let i = 0; i < commIds.length; i += CHUNK) {
+      const chunk = commIds.slice(i, i + CHUNK);
+      const aliases = chunk.map((id, ix) =>
+        `r${ix}:findManyCommunicationRecipient(where:{communications_id:{equals:${id}}}){recipient_id to_address}`
+      ).join('\n');
+      const d3 = await gql(jwt, `{${aliases}}`);
+      for (let ix = 0; ix < chunk.length; ix++) {
+        const cid = chunk[ix];
+        for (const r of (d3[`r${ix}`]||[])) {
+          for (const log of commIdToLogs[cid]) {
+            const key = `${r.recipient_id}_${log.logId}`;
+            if (!rowMap[key]) rowMap[key] = {
+              contactId: r.recipient_id, email: r.to_address,
+              autoName: log.autoName, autoId: log.autoId,
+              sendDate: log.sendDate, logId: log.logId
+            };
+          }
+        }
+      }
+    }
+
+    const entries = Object.values(rowMap);
+    const contactIds = [...new Set(entries.map(e => e.contactId))];
+
+    showProgress(`Checking bookings for ${contactIds.length} contacts…`, 65);
+
+    // ── STEP 4: Contact bookings (batched) ───────
+    const contactData = {};
+    const CC = 30;
+    for (let i = 0; i < contactIds.length; i += CC) {
+      const chunk = contactIds.slice(i, i + CC);
+      const d4 = await gql(jwt, `{
+        findManyCmContact(where:{ID:{in:[${chunk}]}}) {
+          ID Fname Lname Email
+          Booking { id start_date status service }
+        }
+      }`);
+      for (const c of d4.findManyCmContact) contactData[c.ID] = c;
+    }
+
+    showProgress('Calculating conversions…', 88);
+
+    // ── STEP 5: Build result rows ─────────────────
+    allRows = [];
+    for (const e of entries) {
+      const c = contactData[e.contactId];
+      if (!c) continue;
+      const name = `${c.Fname||''} ${c.Lname||''}`.trim();
+      const bookings = c.Booking || [];
+      const afterBookings = bookings.filter(b => {
+        if (b.status === 'Cancelled') return false;
+        const bd = parseBookingDate(b.start_date);
+        return bd > e.sendDate;
+      });
+      const booked = afterBookings.length > 0;
+      const first = booked ? afterBookings.sort((a,b)=>a.start_date-b.start_date)[0] : null;
+      allRows.push({
+        contactId: e.contactId,
+        name: name || `Contact ${e.contactId}`,
+        email: c.Email || e.email,
+        autoName: e.autoName,
+        sendDate: e.sendDate,
+        booked,
+        bookingDate: first ? parseBookingDate(first.start_date) : null,
+        service: first ? first.service : null
+      });
+    }
+    allRows.sort((a,b) => b.booked - a.booked || b.sendDate - a.sendDate);
+
+    hideProgress();
+    document.getElementById('setupCard').style.display = 'none';
+    renderSummary(days, new Date(since));
+    curPage = 1;
+    renderTable();
+    document.getElementById('summarySection').style.display = '';
+    document.getElementById('tableSection').style.display = '';
+
+  } catch(e) {
+    hideProgress();
+    showErr(e.message);
+    console.error(e);
+  }
+  document.getElementById('loadBtn').disabled = false;
+}
+
+// ─────────────────────────────────────────────
+// DATE PARSE: 20260408125000 → Date
+// ─────────────────────────────────────────────
+function parseBookingDate(d) {
+  const s = String(d).padStart(14,'0');
+  return new Date(+s.slice(0,4), +s.slice(4,6)-1, +s.slice(6,8), +s.slice(8,10), +s.slice(10,12));
+}
+function fmt(d) { return d.toLocaleDateString('sv-SE'); }
+
+// ─────────────────────────────────────────────
+// SUMMARY
+// ─────────────────────────────────────────────
+function renderSummary(days, since) {
+  const total = allRows.length;
+  const bk    = allRows.filter(r=>r.booked).length;
+  const rate  = total ? Math.round(bk/total*100) : 0;
+  document.getElementById('kTotalSent').textContent = total;
+  document.getElementById('kBooked').textContent    = bk;
+  document.getElementById('kRate').textContent      = rate+'%';
+  document.getElementById('kPeriod').textContent    = days+'d';
+  document.getElementById('kRange').textContent     = fmt(since)+' – '+fmt(new Date());
+
+  const colors = {'Mail 1':'#2980b9','Mail 2':'#8e44ad','Mail 3':'#e67e22'};
+  const grid = document.getElementById('autoGrid');
+  grid.innerHTML = '';
+
+  for (const nm of ['Mail 1','Mail 2','Mail 3']) {
+    const rows = allRows.filter(r=>r.autoName===nm);
+    const s = rows.length, b = rows.filter(r=>r.booked).length;
+    const rt = s ? Math.round(b/s*100) : 0;
+    const col = colors[nm];
+    const div = document.createElement('div');
+    div.className = 'auto-card';
+    div.innerHTML = `
+      <h3>${nm}: FU to Treatment Flow</h3>
+      <div class="stat-row"><span>Recipients</span><b>${s}</b></div>
+      <div class="stat-row"><span>Booked</span><b style="color:var(--green)">${b}</b></div>
+      <div class="stat-row"><span>Not booked</span><b style="color:var(--red)">${s-b}</b></div>
+      <div class="conv-row" style="border-color:${col}">
+        <div class="circle" style="background:${col}">${rt}%</div>
+        <div class="bar-wrap"><div class="bar-fill" style="background:${col};width:0%" data-w="${rt}"></div></div>
+      </div>`;
+    grid.appendChild(div);
+    setTimeout(() => div.querySelector('.bar-fill').style.width = rt+'%', 80);
+  }
+}
+
+// ─────────────────────────────────────────────
+// TABLE
+// ─────────────────────────────────────────────
+function renderTable() {
+  const fa = document.getElementById('fAuto').value;
+  const fb = document.getElementById('fBooked').value;
+  const fs = document.getElementById('fSearch').value.toLowerCase();
+  const cls = {'Mail 1':'m1','Mail 2':'m2','Mail 3':'m3'};
+
+  const f = allRows.filter(r => {
+    if (fa && r.autoName !== fa) return false;
+    if (fb === '1' && !r.booked) return false;
+    if (fb === '0' && r.booked) return false;
+    if (fs && !r.name.toLowerCase().includes(fs) && !r.email.toLowerCase().includes(fs)) return false;
+    return true;
+  });
+
+  const pages = Math.max(1, Math.ceil(f.length / PAGE_SIZE));
+  if (curPage > pages) curPage = 1;
+  const sl = f.slice((curPage-1)*PAGE_SIZE, curPage*PAGE_SIZE);
+
+  if (!sl.length) {
+    document.getElementById('tableBody').innerHTML = '<div class="empty">No matching records.</div>';
+    document.getElementById('pgInfo').textContent = '';
+    document.getElementById('pgBtns').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('tableBody').innerHTML = `<table>
+    <thead><tr>
+      <th>Contact</th><th>Flow</th><th>Email sent</th>
+      <th>Status</th><th>Booking date</th><th>Service</th>
+    </tr></thead>
+    <tbody>${sl.map(r=>`<tr>
+      <td><strong>${esc(r.name)}</strong><br/><span style="color:var(--muted);font-size:.74rem">${esc(r.email)}</span></td>
+      <td><span class="badge ${cls[r.autoName]||''}">${r.autoName}</span></td>
+      <td>${fmt(r.sendDate)}</td>
+      <td><span class="badge ${r.booked?'ok':'no'}">${r.booked?'✓ Booked':'✗ Not booked'}</span></td>
+      <td>${r.bookingDate ? fmt(r.bookingDate) : '—'}</td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.service?esc(r.service):'—'}</td>
+    </tr>`).join('')}</tbody></table>`;
+
+  const start = (curPage-1)*PAGE_SIZE;
+  document.getElementById('pgInfo').textContent =
+    `Showing ${start+1}–${Math.min(start+PAGE_SIZE,f.length)} of ${f.length}`;
+
+  const pb = document.getElementById('pgBtns');
+  pb.innerHTML = '';
+  for (let p=1; p<=pages; p++) {
+    const b = document.createElement('button');
+    b.className = 'pg-btn'+(p===curPage?' on':'');
+    b.textContent = p;
+    b.onclick = () => { curPage=p; renderTable(); };
+    pb.appendChild(b);
+  }
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function showProgress(msg, pct) {
+  const c = document.getElementById('progressCard');
+  c.className = 'progress-card visible';
+  document.getElementById('progressLabel').textContent = msg;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+function hideProgress() { document.getElementById('progressCard').className = 'progress-card'; }
+function showErr(msg) {
+  const b = document.getElementById('errorBox');
+  b.textContent = '⚠️ '+msg;
+  b.className = 'error-box visible';
+}
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
