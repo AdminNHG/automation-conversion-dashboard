@@ -372,33 +372,90 @@ async function loadData(jwtArg) {
   document.getElementById('errorBox').className = 'error-box';
   document.getElementById('summarySection').style.display = 'none';
   document.getElementById('tableSection').style.display = 'none';
-  showProgress('Fetching automation runs…', 5);
+  showProgress('Checking API schema…', 2);
 
   const days  = parseInt(document.getElementById('periodSelect').value);
   const since = new Date(Date.now() - days*86400000).toISOString();
 
   try {
-    // ── STEP 1: Automation logs ──────────────────
-    const d1 = await gql(jwt, `{
-      automations(where:{id:{_in:[7532,7533,7549]}}) {
-        id name
-        automation_logs(where:{create_date:{_gte:"${since}"}},order_by:{create_date:desc}) {
-          id create_date data steps
-        }
-      }
+    // ── STEP 0: Schema introspection ─────────────
+    const intro = await gql(jwt, `{
+      __schema { queryType { fields { name } } }
     }`);
+    const allFields = intro.__schema.queryType.fields.map(f => f.name);
+    const autoFields = allFields.filter(n => /auto/i.test(n));
+    console.log('🔍 Automation-related API fields:', autoFields);
+
+    // Priority order for field name guessing
+    const CANDIDATES_PARENT = ['automations','automation','Automations','Automation','findManyAutomation','pabau_automations','cm_automations'];
+    const CANDIDATES_LOG    = ['automation_logs','automation_log','AutomationLog','AutomationLogs','findManyAutomationLog','findManyAutomationLogs'];
+
+    const foundParent = CANDIDATES_PARENT.find(c => allFields.includes(c));
+    const foundLog    = CANDIDATES_LOG.find(c => allFields.includes(c));
+
+    showProgress('Fetching automation runs…', 5);
 
     const completeLogs = [];
-    for (const auto of d1.automations) {
-      for (const log of auto.automation_logs) {
-        if (log.data?.status === 'Complete' && log.data?.campaignId) {
-          completeLogs.push({
-            autoId: auto.id, autoName: AUTO_NAMES[auto.id],
-            logId: log.id, sendDate: new Date(log.create_date),
-            campaignId: parseInt(log.data.campaignId)
-          });
+
+    // ── STEP 1a: Nested query (automation → logs) ─
+    if (foundParent) {
+      const d1 = await gql(jwt, `{
+        ${foundParent}(where:{id:{_in:[7532,7533,7549]}}) {
+          id name
+          automation_logs(where:{create_date:{_gte:"${since}"}},order_by:{create_date:desc}) {
+            id create_date data steps
+          }
+        }
+      }`).catch(() => null);
+
+      if (d1 && d1[foundParent]) {
+        for (const auto of d1[foundParent]) {
+          for (const log of (auto.automation_logs || [])) {
+            if (log.data?.status === 'Complete' && log.data?.campaignId) {
+              completeLogs.push({
+                autoId: auto.id, autoName: AUTO_NAMES[auto.id],
+                logId: log.id, sendDate: new Date(log.create_date),
+                campaignId: parseInt(log.data.campaignId)
+              });
+            }
+          }
         }
       }
+    }
+
+    // ── STEP 1b: Flat log query (if nested didn't work) ─
+    if (!completeLogs.length && foundLog) {
+      const d1b = await gql(jwt, `{
+        ${foundLog}(
+          where:{automation_id:{_in:[7532,7533,7549]},create_date:{_gte:"${since}"}}
+          order_by:{create_date:desc}
+        ) { id create_date data automation_id }
+      }`).catch(() => null);
+
+      if (d1b && d1b[foundLog]) {
+        for (const log of d1b[foundLog]) {
+          if (log.data?.status === 'Complete' && log.data?.campaignId) {
+            const autoId = parseInt(log.automation_id);
+            completeLogs.push({
+              autoId, autoName: AUTO_NAMES[autoId] || `Flow ${autoId}`,
+              logId: log.id, sendDate: new Date(log.create_date),
+              campaignId: parseInt(log.data.campaignId)
+            });
+          }
+        }
+      }
+    }
+
+    // ── STEP 1c: If still nothing, show schema info ─
+    if (!completeLogs.length && !foundParent && !foundLog) {
+      const autoList = autoFields.length
+        ? autoFields.join(', ')
+        : '(none found — check your token permissions)';
+      throw new Error(
+        `Could not find automation fields in your Pabau API.\n\n` +
+        `Fields found containing "auto": ${autoList}\n\n` +
+        `Please screenshot this error and send to your developer to update the dashboard query.`
+      );
     }
 
     if (!completeLogs.length) {
@@ -435,7 +492,7 @@ async function loadData(jwtArg) {
     for (let i = 0; i < commIds.length; i += CHUNK) {
       const chunk = commIds.slice(i, i + CHUNK);
       const aliases = chunk.map((id, ix) =>
-        `r${ix}:findManyCommunicationRecipient(where:{communications_id:{equals:${id}}}){recipient_id to_address}`
+        `r${ix}:findManyCommunicationRecipient(where:zcommunications_id:{equals:${id}}}){recipient_id to_address}`
       ).join('\n');
       const d3 = await gql(jwt, `{${aliases}}`);
       for (let ix = 0; ix < chunk.length; ix++) {
